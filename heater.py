@@ -65,7 +65,11 @@ class Heater:
         PID controller used to regulate heater power. This function calculates 
         proportional, integral, and derivative terms which change depending on 
         how large the difference (error) between current and the aim fluid temperature
-        is and subsequently outputs a limited heater power.
+        is and subsequently outputs a limited heater power. Anti windup is implemented
+        into the PID controller to ensure that if the PID saturates at 0 or 1 
+        (and the error continues to push in said direction) that the integral term 
+        will not build constantly. This prevents massive integral term overshoots
+        which cause the PID to stay saturated for the whole simulation run.
 
         Parameters
         ----------
