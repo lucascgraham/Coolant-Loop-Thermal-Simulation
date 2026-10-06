@@ -55,7 +55,11 @@ class Cooler:
         PID controller used to regulate cooler power. This function calculates 
         proportional, integral, and derivative terms which change depending on 
         how large the difference (error) between current and the aim fluid temperature
-        is and subsequently outputs a limited cooler power.
+        is and subsequently outputs a limited cooler power. Anti windup is implemented
+        into the PID controller to ensure that if the PID saturates at 0 or 1 
+        (and the error continues to push in said direction) that the integral term 
+        will not build constantly. This prevents massive integral term overshoots
+        which cause the PID to stay saturated for the whole simulation run.
 
         Parameters
         ----------
@@ -82,7 +86,7 @@ class Cooler:
          
         u_0 = (Kp * e_tau) + (Ki * self.integral) + (Kd * derivative)
         
-        # ONLY INTEGRATE WHEN NOT SATURATING IN SAME DIRECTION
+        # ONLY ADD TO INTEGRAL TERM WHEN POWER CONTROL IS NOT SATURATED AT 1 OR 0
         if not ((u_0 >= 1 and e_tau > 0) or (u_0 <= 0 and e_tau < 0)):
             self.integral += e_tau * dt
         
