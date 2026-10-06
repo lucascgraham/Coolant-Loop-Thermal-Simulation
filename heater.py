@@ -92,7 +92,7 @@ class Heater:
         
         u_0 = (Kp * e_tau) + (Ki * self.integral) + (Kd * derivative)
         
-        # ONLY INTEGRATE WHEN NOT SATURATING IN SAME DIRECTION
+        # ONLY ADD TO INTEGRAL TERM WHEN POWER CONTROL IS NOT SATURATED AT 1 OR 0
         if not ((u_0 >= 1 and e_tau > 0) or (u_0 <= 0 and e_tau < 0)):
             self.integral += e_tau * dt
         
